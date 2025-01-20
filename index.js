@@ -31,6 +31,22 @@ app.post("/api/register", (req, res) => {
     res.json({ message: "Регистрация прошла успешно" })
 });
 
+app.post("/api/createPost", (req, res) => {
+    const { content, userName, userSurname, userId } = req.body;
+    const fullDateTime = new Date();
+    const dateTime = fullDateTime.toDateString();
+    const newPost = {
+        postId: allPosts.length + 1,
+        userId,
+        userName: `${userName} ${userSurname}`,
+        dateTime,
+        content
+    };
+    console.log(newPost);
+    allPosts.push(newPost);
+    res.json(newPost);
+});
+
 app.post("/api/login", (req, res) => {
     console.log(`Попытка авторизации: ${req.body.email} ${req.body.password}`);
     const { email, password } = req.body;
@@ -38,7 +54,7 @@ app.post("/api/login", (req, res) => {
 
     if (user) {
         if (user.password === password) {
-            res.json({ name: user.name, surname: user.surname, message: "Успешный вход" });
+            res.json({ name: user.name, surname: user.surname, email: user.email, role: user.role, id: user.id, message: "Успешный вход" });
         } else {
             res.status(401).json({ message: "Неверный пароль" });
         }
